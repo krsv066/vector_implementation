@@ -59,6 +59,21 @@ public:
             ++ind;
         }
     }
+    
+    Vector(const Vector& other) 
+        : size_(other.size_), capacity_(other.capacity_) {
+        data_ = allocator_.allocate(capacity_);
+        for (size_t i = 0; i < size_; ++i) {
+            allocator_type::construct(allocator_, data_ + i, other.data_[i]);
+        }
+    }
+
+    Vector(Vector&& other)
+        : data_(other.data_), size_(other.size_), capacity_(other.capacity_), allocator_(std::move(other.allocator_)) {
+        other.data_ = nullptr;
+        other.size_ = 0;
+        other.capacity_ = 0;
+    }
 
     ~Vector() {
         Clear();
